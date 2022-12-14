@@ -1,11 +1,16 @@
 <template>
-  <div class="avatar-menu">
+  <div mr-10px>
     <el-dropdown trigger="hover" @command="handleMenuCommand">
-      <div class="avatar-wrapper">
+      <div flex flex-row items-center>
         <img
           src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
+          h-24px
+          w-24px
+          mr-8px
+          rd-12px
           class="user-avatar"
         />
+        <span>{{ getUsername }}</span>
       </div>
       <template #dropdown>
         <el-dropdown-menu class="user-dropdown">
@@ -27,21 +32,16 @@
 import { Icon } from "@iconify/vue";
 import type { Command } from "./data";
 import { menuList } from "./data";
+import { useUserInfoStore } from "@/stores/modules/auth";
+import { storeToRefs } from "pinia";
+import { logoutAndReload } from "@/utils/security";
 
+const { getUsername } = storeToRefs(useUserInfoStore());
 const handleMenuCommand = (command: Command): void => {
   switch (command.action) {
     case "logout":
+      logoutAndReload();
       break;
   }
 };
 </script>
-<style lang="postcss" scoped>
-.avatar-menu {
-  margin-right: 10px;
-  & .user-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 18px;
-  }
-}
-</style>

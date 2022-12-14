@@ -1,21 +1,20 @@
 import type { NavigationGuardWithThis, Router } from "vue-router";
 import { BaseNavigationGuard } from "@/router/types";
-import { userRouterStore } from "@/stores/modules/router";
+import { useRouterStore } from "@/stores/modules/router";
 
 export class DynamicRouterGuard extends BaseNavigationGuard {
-  public static get(): DynamicRouterGuard {
-    return new DynamicRouterGuard();
+  public order(): number {
+    return 20;
   }
 
   public exec(router: Router): NavigationGuardWithThis<undefined> {
-    return async (to, from) => {
+    return async () => {
       // todo 添加动态路由到 router
-      const result = await userRouterStore().fetchRouters();
+      const result = await useRouterStore().fetchRoutes();
       result.dynamicRoutes.forEach((route) => {
         router.addRoute(route);
       });
 
-      console.log("DynamicRouterGuard");
       return true;
     };
   }

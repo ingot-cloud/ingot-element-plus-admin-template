@@ -1,8 +1,9 @@
 import type { RouteRecordRaw } from "vue-router";
 import InAppLayout from "@/components/layout/InAppLayout.vue";
 import BasicRoutes from "./basic";
+import { PageNameEnum, PagePathEnum } from "@/enums/pageEnums";
 
-const routes: Array<RouteRecordRaw> = [
+const common: Array<RouteRecordRaw> = [
   {
     path: "/:pathMatch(.*)",
     name: "NotFound",
@@ -10,19 +11,44 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/NotFound.vue"),
   },
   {
+    path: "/redirect",
+    component: InAppLayout,
+    name: "RedirectTo",
+    meta: {
+      title: PageNameEnum.REDIRECT,
+      hidden: true,
+    },
+    children: [
+      {
+        path: "/redirect/:path(.*)",
+        name: PageNameEnum.REDIRECT,
+        component: () => import("@/views/common/redirect/RedirectPage.vue"),
+        meta: {
+          title: PageNameEnum.REDIRECT,
+          hidden: true,
+        },
+      },
+    ],
+  },
+];
+
+const routes: Array<RouteRecordRaw> = [
+  ...common,
+  {
     path: "/",
     name: "Root",
-    redirect: "/dashboard",
+    redirect: PagePathEnum.HOME,
     component: InAppLayout,
     meta: {
       hidden: false,
     },
     children: [
       {
-        path: "/dashboard",
+        path: PagePathEnum.HOME,
         meta: {
           title: "首页",
-          icon: "dash-board",
+          icon: "home",
+          isAffix: true,
         },
         component: () => import("@/views/dashboard/DashboardPage.vue"),
       },

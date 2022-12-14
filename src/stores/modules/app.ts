@@ -1,10 +1,6 @@
 import { ref, reactive, computed } from "vue";
 import { defineStore } from "pinia";
-import { StoreManager } from "@/utils/storage";
-import { StoreType } from "@/models/storage";
 import type { AppStore } from "../types";
-
-const KEY_SIDEBAR_OPEN = "sidebarOpen";
 
 /**
  * 全局配置
@@ -13,30 +9,42 @@ export const useAppStore = defineStore("app", () => {
   const app = reactive<AppStore>({
     title: import.meta.env.VITE_APP_TITLE,
     componentSize: "default",
+    netConfig: {
+      baseURL: import.meta.env.VITE_APP_NET_BASE_URL || undefined,
+      timeout: import.meta.env.VITE_APP_NET_DEFAULT_TIMEOUT || 10_000,
+      timeoutErrorMessage:
+        import.meta.env.VITE_APP_NET_DEFAULT_TIMEOUT_MESSAGE || undefined,
+    },
+    tenant: import.meta.env.VITE_APP_TENANT,
+    basicToken: `Basic ${import.meta.env.VITE_APP_BASIC_TOKEN}`,
   });
-  return { app };
+
+  const getTenant = computed(() => app.tenant);
+
+  const getBasicToken = computed(() => app.basicToken);
+
+  return { app, getTenant, getBasicToken };
 });
 
 /**
  * App 菜单
  */
-export const useAppMenuStore = defineStore("app.menu", () => {
-  const sidebarOpened = ref(false);
-  const getMenuOpened = computed(() => {
-    const value = StoreManager.get(KEY_SIDEBAR_OPEN, StoreType.Session);
-    if (value) {
-      sidebarOpened.value = value === "1";
-    }
-    return sidebarOpened.value;
-  });
-  function toggleMenu() {
-    sidebarOpened.value = !sidebarOpened.value;
-    StoreManager.set({
-      key: KEY_SIDEBAR_OPEN,
-      value: sidebarOpened.value ? "1" : "0",
-      type: StoreType.Session,
+export const useAppMenuStore = defineStore(
+  "app.menu",
+  () => {
+    const menuOpenStatus = ref(false);
+    const getMenuOpened = computed(() => {
+      return menuOpenStatus.value;
     });
+    const toggleMenu = () => {
+      menuOpenStatus.value = !menuOpenStatus.value;
+    };
+    return { menuOpenStatus, getMenuOpened, toggleMenu };
+  },
+  {
+    persist: {
+      storage: localStorage,
+      paths: ["menuOpenStatus"],
+    },
   }
-
-  return { sidebarOpened, getMenuOpened, toggleMenu };
-});
+);
