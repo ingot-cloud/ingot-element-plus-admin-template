@@ -4,18 +4,17 @@ import { useRouterStore } from "@/stores/modules/router";
 
 export class DynamicRouterGuard extends BaseNavigationGuard {
   public order(): number {
-    return 20;
+    return 30;
   }
 
   public exec(router: Router): NavigationGuardWithThis<undefined> {
-    return async () => {
-      // todo 添加动态路由到 router
+    return async (to) => {
       const result = await useRouterStore().fetchRoutes();
       result.dynamicRoutes.forEach((route) => {
         router.addRoute(route);
       });
 
-      return true;
+      return { path: to.fullPath, replace: true, query: to.query };
     };
   }
 }

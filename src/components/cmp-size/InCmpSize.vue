@@ -6,9 +6,9 @@
       <el-dropdown-menu>
         <el-dropdown-item
           v-for="item in ComponentSizeList"
-          :key="item"
-          :disabled="app.componentSize === item.value"
-          @click="app.componentSize = item.value"
+          :key="item.value"
+          :disabled="componentSize === item.value"
+          @click="appStateStore.changeComponentSize(item.value)"
         >
           {{ item.label }}
         </el-dropdown-item>
@@ -18,8 +18,9 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from "@/stores/modules/app";
+import { useAppStateStore } from "@/stores/modules/app";
 import { storeToRefs } from "pinia";
 import { ComponentSizeList } from "./types";
-const { app } = storeToRefs(useAppStore());
+const appStateStore = useAppStateStore();
+const { componentSize } = storeToRefs(appStateStore);
 </script>

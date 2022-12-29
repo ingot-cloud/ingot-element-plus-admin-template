@@ -1,27 +1,27 @@
 <template>
   <el-menu-item v-if="isSingle" :index="singleRoute.path">
     <in-icon
-      v-if="singleRoute.meta && singleRoute.meta.icon"
-      :name="singleRoute.meta.icon"
+      v-if="singleRoute.icon"
+      :name="singleRoute.icon"
       class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
       :class="{ 'mr-2': getMenuOpened }"
     />
     <template #title>
-      <span v-if="singleRoute.meta && singleRoute.meta.title">
-        {{ singleRoute.meta.title }}
+      <span v-if="singleRoute.title">
+        {{ singleRoute.title }}
       </span>
     </template>
   </el-menu-item>
   <el-sub-menu v-else :index="route.path">
     <template #title>
       <in-icon
-        v-if="route.meta && route.meta.icon"
-        :name="route.meta.icon"
+        v-if="route.icon"
+        :name="route.icon"
         class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
         :class="{ 'mr-2': getMenuOpened }"
       />
-      <span v-if="route.meta && route.meta.title">
-        {{ route.meta.title }}
+      <span v-if="route.title">
+        {{ route.title }}
       </span>
     </template>
     <in-submenu
@@ -33,20 +33,18 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, computed } from "vue";
 import type { PropType } from "vue";
-import type { RouteRecordRaw } from "vue-router";
-import { useAppMenuStore } from "@/stores/modules/app";
-import { storeToRefs } from "pinia";
+import type { MenuRouteRecord } from "@/components/layout";
+import { useAppStateStore } from "@/stores/modules/app";
 
 const props = defineProps({
   route: {
-    type: Object as PropType<RouteRecordRaw>,
+    type: Object as PropType<MenuRouteRecord>,
     default: null,
   },
 });
 
-const { getMenuOpened } = storeToRefs(useAppMenuStore());
+const { getMenuOpened } = storeToRefs(useAppStateStore());
 
 const isSingle = computed(() => {
   const children = props.route.children;
@@ -54,9 +52,12 @@ const isSingle = computed(() => {
 });
 
 const singleRoute = computed(() => {
+  // 如果只有一个child，那么标题使用父标题如果存在的话
   const children = props.route.children;
   if (children && children.length !== 0) {
-    return children[0];
+    const route = children[0];
+    route.title = props.route.title || route.title;
+    return route;
   }
   return props.route;
 });

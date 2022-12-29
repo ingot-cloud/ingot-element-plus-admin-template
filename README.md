@@ -1,4 +1,4 @@
-# ingot-element-plus-admin-template
+# ingot-admin
 
 ### 技术栈
   * [vue3](https://github.com/vuejs/core)
@@ -16,3 +16,10 @@
   * [vite-plugin-components](https://github.com/antfu/vite-plugin-components)
   * [unplugin-icons](https://github.com/antfu/unplugin-icons)
   * [unocss](https://github.com/unocss/unocss)
+
+
+### TODO
+  * [ ] Table封装
+    * [ ] 表格动态展示列
+    * [ ] 列固定
+  * [ ] Form封装

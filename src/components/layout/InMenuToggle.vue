@@ -7,10 +7,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { useAppMenuStore } from "@/stores/modules/app";
-import { storeToRefs } from "pinia";
+import { useAppStateStore } from "@/stores/modules/app";
 
-const store = useAppMenuStore();
+const store = useAppStateStore();
 
 const { getMenuOpened } = storeToRefs(store);
 const handleMenuIconClick = () => {

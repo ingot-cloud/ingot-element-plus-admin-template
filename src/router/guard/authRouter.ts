@@ -1,11 +1,10 @@
 import type { NavigationGuardWithThis } from "vue-router";
 import { BaseNavigationGuard } from "@/router/types";
 import { useAuthStore } from "@/stores/modules/auth";
-import { storeToRefs } from "pinia";
 
 export class AuthGuard extends BaseNavigationGuard {
   public order(): number {
-    return 1;
+    return 10;
   }
 
   public exec(): NavigationGuardWithThis<undefined> {

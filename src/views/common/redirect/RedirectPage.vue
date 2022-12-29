@@ -2,11 +2,17 @@
   <div></div>
 </template>
 <script lang="ts" setup>
-import { doRedirect } from "@/helper/web/usePage";
+import { RedirectField } from "@/models/enums/pageEnums";
+import { Message } from "@/utils/message";
 
-doRedirect()
+const props = defineProps({
+  [`${RedirectField.PATH}`]: String,
+  [`${RedirectField.TYPE}`]: String,
+});
+
+useDoRedirect(props[RedirectField.PATH], props[RedirectField.TYPE])
   .then(() => {
-    console.debug("刷新成功");
+    Message.success("刷新成功");
   })
   .catch(() => {
     console.debug("刷新失败");

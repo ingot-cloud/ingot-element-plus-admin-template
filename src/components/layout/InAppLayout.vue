@@ -13,7 +13,7 @@
 
       <el-main>
         <router-view v-slot="{ Component }">
-          <keep-alive :include="cacheViews">
+          <keep-alive :include="cacheNames">
             <component :is="Component" />
           </keep-alive>
         </router-view>
@@ -22,7 +22,8 @@
   </el-container>
 </template>
 <script lang="ts" setup>
-const cacheViews: string[] = [];
+import { useRouterStore } from "@/stores/modules/router";
+const { cacheNames } = storeToRefs(useRouterStore());
 </script>
 <style lang="postcss" scoped>
 .el-aside {
@@ -30,11 +31,13 @@ const cacheViews: string[] = [];
 }
 
 .el-header {
+  --el-header-padding: var(--in-app-bar-padding);
+  --el-header-height: var(--in-app-bar-height);
   @apply flex items-center justify-between box-border dark:bg-[var(--in-bg-color)] b-b b-b-[var(--in-border-color)];
 }
 
 .el-main {
-  @apply bg-[var(--in-bg-color-page)] box-border p-10px overflow-x-hidden;
+  @apply bg-[var(--in-bg-color-page)] box-border p-[var(--in-common-padding)] overflow-x-hidden;
   &::-webkit-scrollbar {
     @apply bg-[var(--in-bg-color-page)];
   }

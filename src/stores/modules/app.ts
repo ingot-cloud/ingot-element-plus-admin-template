@@ -1,6 +1,5 @@
-import { ref, reactive, computed } from "vue";
-import { defineStore } from "pinia";
 import type { AppStore } from "../types";
+import type { ComponentSize } from "@/components/cmp-size/types";
 
 /**
  * 全局配置
@@ -8,7 +7,6 @@ import type { AppStore } from "../types";
 export const useAppStore = defineStore("app", () => {
   const app = reactive<AppStore>({
     title: import.meta.env.VITE_APP_TITLE,
-    componentSize: "default",
     netConfig: {
       baseURL: import.meta.env.VITE_APP_NET_BASE_URL || undefined,
       timeout: import.meta.env.VITE_APP_NET_DEFAULT_TIMEOUT || 10_000,
@@ -20,31 +18,47 @@ export const useAppStore = defineStore("app", () => {
   });
 
   const getTenant = computed(() => app.tenant);
-
   const getBasicToken = computed(() => app.basicToken);
 
-  return { app, getTenant, getBasicToken };
+  return {
+    app,
+    getTenant,
+    getBasicToken,
+  };
 });
 
 /**
- * App 菜单
+ * app状态
  */
-export const useAppMenuStore = defineStore(
-  "app.menu",
+export const useAppStateStore = defineStore(
+  "app.state",
   () => {
     const menuOpenStatus = ref(false);
+    const componentSize = ref<ComponentSize>("default");
+
     const getMenuOpened = computed(() => {
       return menuOpenStatus.value;
     });
+
     const toggleMenu = () => {
       menuOpenStatus.value = !menuOpenStatus.value;
     };
-    return { menuOpenStatus, getMenuOpened, toggleMenu };
+    const changeComponentSize = (size: ComponentSize) => {
+      componentSize.value = size;
+    };
+
+    return {
+      menuOpenStatus,
+      componentSize,
+      getMenuOpened,
+      toggleMenu,
+      changeComponentSize,
+    };
   },
   {
     persist: {
       storage: localStorage,
-      paths: ["menuOpenStatus"],
+      paths: ["menuOpenStatus", "componentSize"],
     },
   }
 );

@@ -18,11 +18,11 @@
 
     <div class="tabs-action">
       <el-dropdown trigger="click">
-        <el-button class="btn" self-center size="small">
+        <in-button class="btn" self-center>
           <el-icon>
             <i-ep-arrow-down />
           </el-icon>
-        </el-button>
+        </in-button>
 
         <template #dropdown>
           <el-dropdown-menu>
@@ -69,10 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { TabsPaneContext } from "element-plus";
-import { ref, watch } from "vue";
-import { storeToRefs } from "pinia";
-import { useRouter, useRoute } from "vue-router";
+import type { TabsPaneContext, TabPaneName } from "element-plus";
 import { useTabsStore } from "@/stores/modules/tabs";
 
 const route = useRoute();
@@ -92,7 +89,7 @@ watch(
   () => {
     currentTab.value = route.path;
     // 隐藏的不添加
-    if (route.meta.hidden) {
+    if (route.meta.hideMenu) {
       return;
     }
     const tabItem = {
@@ -113,8 +110,8 @@ const handleTabClick = (tabItem: TabsPaneContext) => {
   router.push(path);
 };
 
-const handleRemove = (tabPath: string) => {
-  tabsStore.removeTab(tabPath, tabPath === route.path);
+const handleRemove = (tabPath: TabPaneName) => {
+  tabsStore.removeTab(tabPath as string, tabPath === route.path);
 };
 
 enum Action {
@@ -159,6 +156,7 @@ const handleAction = (action: Action) => {
     }
   }
   & .el-tabs {
+    --el-tabs-header-height: var(--in-tabs-height);
     @apply p-b-5px p-t-5px flex-1;
     & .el-tabs__header {
       @apply box-border m-b-0 b-none;
